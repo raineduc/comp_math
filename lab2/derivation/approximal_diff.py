@@ -1,4 +1,4 @@
-from ..functions.function import Function
+from functions.function import Function
 
 dx = 1.0E-6 # конечная величина вместо бесконечно малой 
 

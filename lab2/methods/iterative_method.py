@@ -1,6 +1,7 @@
-from ..functions.function import Function
-from ..common_typings import Interval
-from ..derivation.approximal_diff import calc_approximate_derivative
+from functions.function import Function
+from common_typings import Interval
+from derivation.approximal_diff import calc_approximate_derivative
+from .solution import Solution, IterativeMethodIterationData, IllegalConditionException
 
 # Условия сходимости при использовании метода релаксации:
 # -2 < lambda * f'(x) < 0
@@ -20,9 +21,9 @@ from ..derivation.approximal_diff import calc_approximate_derivative
 # получается новый итерационный процесс, но уже с более точным начальным приближением
 # так не придется вычислять максимум производной и выполнится условие
 # |1 - f'(x)/M | < 1 при знакопостоянстве f'(x)
-def solve(function: Function, interval: Interval, precision: float) -> float:
+def solve(function: Function, interval: Interval, precision: float) -> tuple[Solution, list[IterativeMethodIterationData]]:
     if (function(interval.left) * function(interval.right) >= 0):
-        raise Exception("Интервал должен удовлетворять условию f(a)*f(b) < 0")
+        raise IllegalConditionException("Интервал должен удовлетворять условию f(a)*f(b) < 0")
 
     left, right = interval
     M_value = function(right) - function(left) / (right - left) # т. Лагранжа
@@ -34,7 +35,13 @@ def solve(function: Function, interval: Interval, precision: float) -> float:
     previous_x = left    
     x = phi(previous_x)
 
-    while (abs(x - previous_x) >= precision):
+    iterations_count = 1
+
+    iterations = []
+
+    iterations.append(IterativeMethodIterationData(x, previous_x, iterations_count))
+
+    while (abs(x - previous_x) >= precision or iterations_count <= 2):
         derivate_at_point = calc_approximate_derivative(function, x)
         if (abs(derivate_at_point) > abs(M_value)):
             M_value = derivate_at_point
@@ -43,8 +50,10 @@ def solve(function: Function, interval: Interval, precision: float) -> float:
         previous_x = x
         x = phi(previous_x)
         if (abs(x - previous_x) >= last_approximation):
-            raise Exception("Метод итерации не сходится")  
-    return x
+            raise IllegalConditionException("Метод итерации не сходится")
+        iterations_count += 1
+        iterations.append(IterativeMethodIterationData(x, previous_x, iterations_count))
+    return Solution(x, function(x), iterations_count), iterations
 
 
 def _transform_equation(function: Function, M: float) -> Function:

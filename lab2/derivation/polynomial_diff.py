@@ -1,4 +1,4 @@
-from ..functions.polynomial import Polynomial
+from functions.polynomial import Polynomial
 
 def differentiate(function: Polynomial) -> Polynomial:
     new_coefs = []
