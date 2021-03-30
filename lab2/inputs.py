@@ -69,10 +69,9 @@ def read_function(stream: TextIOBase) -> Function:
         raise Exception("Указанного метода не существует") 
 
 def create_function(coefs: list[float]) -> Callable[[float], float]:
-    a, b, c, d, f, g, h, j = coefs
+    a, b, c, d, f, g, h, j, *rest = coefs
     print(coefs)
-    polynomial_coefs = coefs[8:]
-    rest = Polynomial(polynomial_coefs)
+    rest = Polynomial(rest)
 
     if h == 0.0:
         return lambda x: a*sin(b*x) + c*cos(d*x) + f * exp(g * x) + rest(x)
