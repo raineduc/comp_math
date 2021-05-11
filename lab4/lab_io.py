@@ -23,6 +23,13 @@ def read_points(stream: TextIO) -> list[Point]:
     return result
 
 
+def _limit_axis(data: list[float], relative_margin: float) -> tuple[float, float]:
+    data_max = max(data)
+    data_min = min(data)
+    margin = relative_margin * (data_max - data_min)
+    return data_min - margin, data_max + margin
+
+
 def draw(approximations: list[ApproximationResult], points: list[Point]):
     colors = PLOT_COLORS.copy()
     data_x = list(map(lambda point: point.x, points))
@@ -31,6 +38,7 @@ def draw(approximations: list[ApproximationResult], points: list[Point]):
     plt.grid(True, which='both')
     plt.xlabel('X')
     plt.ylabel('Y')
+    plt.ylim(_limit_axis(data_y, 0.5))
     plt.scatter(data_x, data_y, s=20, zorder=10)
 
     for i in range(len(approximations)):
@@ -41,7 +49,7 @@ def draw(approximations: list[ApproximationResult], points: list[Point]):
         plt.plot(x, func, colors.pop(), label=approx.description, zorder=5)
 
     # ---
-    plt.legend(loc='upper left', fontsize='medium', bbox_to_anchor=(1, 1))
+    plt.legend(loc='lower center', fontsize='medium', bbox_to_anchor=(1, 1))
     plt.tight_layout()
     plt.savefig('graph.png')
     plt.show()
