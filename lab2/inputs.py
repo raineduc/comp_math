@@ -2,7 +2,7 @@
 from enum import Enum
 from math import exp, log2, sin, cos
 from typing import Callable, TextIO
-from io import TextIOBase
+from lab_io import TextIOBase
 from sys import stdin
 from common_typings import Interval
 from functions.function import Function 

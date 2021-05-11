@@ -1,5 +1,5 @@
 from eq_system import ExtendedMatrix
-from io import TextIOBase
+from lab_io import TextIOBase
 from sys import stdin
 
 
