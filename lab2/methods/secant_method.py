@@ -10,9 +10,9 @@ def solve(function: Function, interval: Interval, precision: float) -> tuple[Sol
     left, right = interval    
     x0 = x1 = None
     if function(left) * calc_higher_order_derivative(function, left, 2) > 0:
-        x0, x1 = left, right
+        x0, x1 = left, left + 0.01
     else:
-        x0, x1 = right, left
+        x0, x1 = right, right - 0.01
     return _calc_approximate_point(function, precision, x0, x1)    
 
 def _calc_approximate_point(function: Function, precision: float, x0: float, x1: float, 

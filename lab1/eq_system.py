@@ -3,31 +3,59 @@ from copy import deepcopy
 from itertools import product
 from enum import Enum
 
+ExtendedMatrix = list[list[float]]
+
+
+def _format_var(x: int) -> str:
+    return "{:<12.3e}".format(x)
+
+
+def format_variables(vars: list[int]) -> list[str]:
+    return list(map(_format_var, vars))
+
+
+def _format_triangular_matrix_var(x, row_index, col_index):
+    if (col_index < row_index):
+        return "{:<12}".format(x)
+    return "{:<12.3e}".format(x)
+
+
+def _format_triangular_matrix_row(row, row_index):
+    return list(map(lambda pair: _format_triangular_matrix_var(pair[1], row_index, pair[0]), enumerate(row)))
+
+
+def print_triangular_matrix(matrix: ExtendedMatrix, new_order: list[int]):
+    formatted = list(map(lambda x: "x{:<11}".format(x + 1), new_order))
+    print("{} b".format(' '.join(formatted)))
+    for index, row in enumerate(matrix):
+        print("{}".format(' '.join(_format_triangular_matrix_row(row, index))))
+
+
 class Decision(Enum):
     SINGLE = 1
     INFINITY = 2
     NONE = 3
 
-ExtendedMatrix = list[list[float]]
-    
 
 def solve_sle(matrix: ExtendedMatrix) -> tuple[Decision, list[float], list[float]]:
     new_matrix = deepcopy(matrix)
     new_order, changes = to_triangular_matrix(new_matrix)
     if (calc_determinant(new_matrix) == 0):
         return _find_zero_determinant_decision(new_matrix), [], []
-    vars = _calc_variables(new_matrix)    
+    vars = _calc_variables(new_matrix)
     vars_with_order = [var[1] for var in sorted(zip(new_order, vars))]
     deviations = _calc_deviations(matrix, vars_with_order)
     return Decision.SINGLE, vars_with_order, deviations
 
+
 def calc_determinant(matrix: ExtendedMatrix) -> float:
     new_matrix = deepcopy(matrix)
     new_order, changes = to_triangular_matrix(new_matrix)
-    result = (-1)**changes
+    result = (-1) ** changes
     for index in range(len(new_matrix)):
         result *= new_matrix[index][index]
-    return result    
+    return result
+
 
 def to_triangular_matrix(matrix: ExtendedMatrix) -> tuple[list[int], int]:
     row_len = len(matrix)
@@ -36,7 +64,7 @@ def to_triangular_matrix(matrix: ExtendedMatrix) -> tuple[list[int], int]:
     for row in range(row_len):
         _change_to_non_empty_row(matrix, row)
         max_main = abs(matrix[row][row])
-        max_matrix_col = row
+        max_matrFix_col = row
         for col in range(row, row_len):
             if abs(matrix[row][col]) > max_main:
                 max_main = matrix[row][col]
@@ -50,7 +78,10 @@ def to_triangular_matrix(matrix: ExtendedMatrix) -> tuple[list[int], int]:
             col_changes_count += 1
             .0
         _exclude_var(matrix, row)
+        print("Шаг {}:".format(row + 1))
+        print_triangular_matrix(matrix, new_var_order)
     return new_var_order, col_changes_count
+
 
 def _change_to_non_empty_row(matrix: ExtendedMatrix, row: int):
     for i in range(row, len(matrix)):
@@ -68,7 +99,8 @@ def _calc_deviations(matrix: ExtendedMatrix, vars: list[float]) -> list[float]:
         for index, var in enumerate(vars):
             sum += var * row[index]
         deviations.append(sum - row[right_part_index])
-    return deviations        
+    return deviations
+
 
 def _calc_variables(matrix: ExtendedMatrix) -> list[float]:
     row_len = len(matrix)
@@ -78,18 +110,20 @@ def _calc_variables(matrix: ExtendedMatrix) -> list[float]:
         right_part = matrix[row][col_len - 1]
         for var_index, known_var in enumerate(vars):
             right_part -= known_var * matrix[row][row_len - 1 - var_index]
-        
+
         new_var = right_part / matrix[row][row]
         vars.append(new_var)
-    vars.reverse()    
+    vars.reverse()
     return vars
+
 
 def _find_zero_determinant_decision(matrix: ExtendedMatrix) -> Decision:
     row_len = len(matrix)
     for i in range(row_len):
         if matrix[i][i] == 0 and matrix[i][row_len] != 0:
             return Decision.NONE
-    return Decision.INFINITY        
+    return Decision.INFINITY
+
 
 def _exclude_var(matrix: ExtendedMatrix, var_index: int):
     row_len = len(matrix)
@@ -101,8 +135,9 @@ def _exclude_var(matrix: ExtendedMatrix, var_index: int):
                 if col == var_index:
                     matrix[row][col] = 0
                     continue
-                matrix[row][col] += coef * matrix[var_index][col]  
-    return            
+                matrix[row][col] += coef * matrix[var_index][col]
+    return
+
 
 def _change_columns(matrix: ExtendedMatrix, col1: int, col2: int):
     r_len = len(matrix)

@@ -35,13 +35,15 @@ def solve(function: Function, interval: Interval, precision: float) -> tuple[Sol
     previous_x = left    
     x = phi(previous_x)
 
+    print("{} {}".format(calc_approximate_derivative(phi, left), calc_approximate_derivative(phi, right)))
+
     iterations_count = 1
 
     iterations = []
 
     iterations.append(IterativeMethodIterationData(x, previous_x, iterations_count))
 
-    while (abs(x - previous_x) >= precision or iterations_count <= 2):
+    while (abs(x - previous_x) >= precision or abs(function(x)) >= precision or iterations_count <= 2):
         derivate_at_point = calc_approximate_derivative(function, x)
         if (abs(derivate_at_point) > abs(M_value)):
             M_value = derivate_at_point
@@ -49,6 +51,7 @@ def solve(function: Function, interval: Interval, precision: float) -> tuple[Sol
         last_approximation = abs(x - previous_x)
         previous_x = x
         x = phi(previous_x)
+        # print("{} {}".format(calc_approximate_derivative(phi, x)))
         if (abs(x - previous_x) >= last_approximation):
             raise IllegalConditionException("Метод итерации не сходится")
         iterations_count += 1

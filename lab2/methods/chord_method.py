@@ -31,7 +31,7 @@ def _common_method(function: Function, interval: Interval, precision: float, pre
 iteration: int = 1, iterations_data: list[IterationData] = []) -> tuple[Solution, list[IterationData]]:
     next_point = _calc_next_point(function, interval)
     iterations_data.append(IterationData(interval, next_point, iteration))
-    if (abs(next_point - previous_point) <= precision and iteration > 2):
+    if (abs(next_point - previous_point) <= precision and abs(function(next_point)) <= precision and iteration > 2):
         return Solution(next_point, function(next_point), iteration), iterations_data
     next_interval = _define_next_interval(function, interval, next_point)    
     return _common_method(function, next_interval, precision, next_point, iteration + 1)    
@@ -39,10 +39,11 @@ iteration: int = 1, iterations_data: list[IterationData] = []) -> tuple[Solution
 def _fast_method_fixed_left(function: Function, interval: Interval, precision: float, previous_point: float, 
 iteration: int = 1, iterations_data: list[IterationData] = []) -> tuple[Solution, list[IterationData]]:
     left, _ = interval
+    print("%d %d".format(left, previous_point))
     point_func_value, left_func_value = function(previous_point), function(left)
     next_point = previous_point - (left - previous_point) * point_func_value / (left_func_value - point_func_value)
     iterations_data.append(IterationData(interval, next_point, iteration))
-    if (abs(next_point - previous_point) <= precision and iteration > 2):
+    if (abs(next_point - previous_point) <= precision and abs(function(next_point)) <= precision and iteration > 2):
         return Solution(next_point, function(next_point), iteration), iterations_data 
     next_interval = Interval(left, next_point)
     return _fast_method_fixed_left(function, next_interval, precision, next_point, iteration + 1)
@@ -50,10 +51,11 @@ iteration: int = 1, iterations_data: list[IterationData] = []) -> tuple[Solution
 def _fast_method_fixed_right(function: Function, interval: Interval, precision: float, previous_point: float, 
 iteration: int = 1, iterations_data: list[IterationData] = []) -> tuple[Solution, list[IterationData]]:
     _, right = interval
+    print('{} {}'.format(previous_point, right))
     point_func_value, right_func_value = function(previous_point), function(right)
     next_point = previous_point - (right - previous_point) * point_func_value / (right_func_value - point_func_value)
     iterations_data.append(IterationData(interval, next_point, iteration))
-    if (abs(next_point - previous_point) <= precision and iteration > 2):
+    if (abs(next_point - previous_point) <= precision and abs(function(next_point)) <= precision and iteration > 2):
         return Solution(next_point, function(next_point), iteration), iterations_data  
     next_interval = Interval(next_point, right)
     return _fast_method_fixed_right(function, next_interval, precision, next_point, iteration + 1)
