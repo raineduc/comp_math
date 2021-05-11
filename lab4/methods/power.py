@@ -15,15 +15,15 @@ def calc_power_least_squares(points: list[Point]) -> Optional[ApproximationResul
             return None
         sx += log(point.x)
         sxx += log(point.x) ** 2
-        sy += point.y
-        sxy += log(point.x) * point.y
+        sy += log(point.y)
+        sxy += log(point.x) * log(point.y)
 
     determinant = sxx * number_of_points - sx * sx
     if determinant == 0:
         return None
 
-    a = (sxy * number_of_points - sx * sy) / determinant
-    b = (sxx * sy - sx * sxy) / determinant
+    b = (sxy * number_of_points - sx * sy) / determinant
+    a = (sxx * sy - sx * sxy) / determinant
 
     a1 = exp(a)  # a = ln(a1)
     b1 = b

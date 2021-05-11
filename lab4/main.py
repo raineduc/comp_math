@@ -1,5 +1,6 @@
 import argparse
 from sys import stdin
+from metrics import calc_pearson_coefficient
 from lab_types import Point, ApproximationResult
 from methods.exponential import calc_exponential_least_squares
 from lab_io import show_approximations, show_approximation_table, read_points, draw
@@ -46,6 +47,8 @@ approximations = calc_approximations(sample)
 if len(approximations) == 0:
     print('Невозможно аппроксимировать входящие данные')
 else:
+    pearson_coef = calc_pearson_coefficient(sample)
+    print('Коэффициент корреляции Пирсона: {:.3f}'.format(pearson_coef))
     best_approx = min(approximations, key=lambda a: a.standard_deviation)
     show_approximation_table(best_approx)
     show_approximations(approximations)

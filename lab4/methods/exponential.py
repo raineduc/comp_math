@@ -20,8 +20,8 @@ def calc_exponential_least_squares(points: list[Point]) -> Optional[Approximatio
     if determinant == 0:
         return None
 
-    a = (sxy * number_of_points - sx * sy) / determinant
-    b = (sxx * sy - sx * sxy) / determinant
+    b = (sxy * number_of_points - sx * sy) / determinant
+    a = (sxx * sy - sx * sxy) / determinant
 
     a1 = exp(a)  # a = ln(a1)
     b1 = b

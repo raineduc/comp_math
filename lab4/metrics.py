@@ -28,7 +28,7 @@ def calc_pearson_coefficient(points: list[Point]) -> float:
     for x, y in points:
         sxy += (x - x_average) * (y - y_average)
         sx2 += (x - x_average) ** 2
-        sy2 = (y - y_average) ** 2
+        sy2 += (y - y_average) ** 2
 
     return sxy / (sqrt(sx2 * sy2))
 

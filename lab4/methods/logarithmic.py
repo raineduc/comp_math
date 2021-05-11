@@ -13,8 +13,8 @@ def calc_logarithmic_least_squares(points: list[Point]) -> Optional[Approximatio
             return None
         sx += log(point.x)
         sxx += log(point.x) ** 2
-        sy += log(point.y)
-        sxy += log(point.x) * log(point.y)
+        sy += point.y
+        sxy += log(point.x) * point.y
 
     determinant = sxx * number_of_points - sx * sx
     if determinant == 0:
