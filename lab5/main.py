@@ -64,21 +64,21 @@ while True:
     print("Введите аргумент:")
     argument = read_float(stdin)
     lagrange_polynomial = build_lagrange_polynomial(sample)
-    show_interpolation(sample, lagrange_polynomial, title='Интерполяция Лагранжа', original_func=chosen_func)
+    show_graph(sample, lagrange_polynomial, title='Интерполяция Лагранжа', original_func=chosen_func)
     print("Значение полинома Лагранжа в указанной точке: {:.3f}".format(lagrange_polynomial(argument)))
 
     if are_nodes_equidistant:
-        sample_center = (sample[-1].x - sample[0].x) / 2
+        sample_center = (sample[-1].x + sample[0].x) / 2
         values = list(map(lambda p: p.y, sample))
         if argument <= sample_center:
             newton_polynomial = build_first_polynomial(sample[0].x, step, values)
-            show_interpolation(sample, newton_polynomial, title='Первая интерполяция Ньютона',
-                               original_func=chosen_func)
+            show_graph(sample, newton_polynomial, title='Первая интерполяция Ньютона',
+                       original_func=chosen_func)
             print("Значение первого полинома Ньютона в указанной точке: {:.3f}".format(newton_polynomial(argument)))
         else:
             newton_polynomial = build_second_polynomial(sample[0].x, step, values)
-            show_interpolation(sample, newton_polynomial, title='Вторая интерполяция Ньютона',
-                               original_func=chosen_func)
+            show_graph(sample, newton_polynomial, title='Вторая интерполяция Ньютона',
+                       original_func=chosen_func)
             print("Значение второго полинома Ньютона в указанной точке: {}".format(newton_polynomial(argument)))
     else:
         print("Для интерполяции Ньютона необходимы равноотстоящие узлы!")
