@@ -7,7 +7,7 @@ def calc_euler_ODE(func: Function, start_point: Point, interval: Interval, step=
     left, right = interval
     x, y = start_point
 
-    while x >= interval.left and x + step <= right + dx:
+    while x >= left and x + step <= right + dx:
         intermediate_y = y + step * func(x, y)
         y = y + step / 2 * (func(x, y) + func(x + step, intermediate_y))
         x = x + step

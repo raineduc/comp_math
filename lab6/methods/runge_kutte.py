@@ -7,7 +7,7 @@ def calc_runge_kutte_ODE(func: Function, start_point: Point, interval: Interval,
     left, right = interval
     x, y = start_point
 
-    while x >= interval.left and x + step <= right + dx:
+    while x >= left and x + step <= right + dx:
         k1 = step * func(x, y)
         k2 = step * func(x + step / 2, y + k1 / 2)
         k3 = step * func(x + step / 2, y + k2 / 2)
